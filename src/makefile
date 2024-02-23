@@ -1,6 +1,6 @@
 CC=g++
 SHARED_FLAGS=-shared -fPIC
-L_FLAGS=-lsystem -lgpu -lgpulet -lcurve_fit -lconfig -lgsl -lgslcblas
+L_FLAGS=-lsystem -lgpu -lgpulet -lcurve_fit -lgsl -lgslcblas
 
 all: main
 
@@ -19,8 +19,5 @@ libgpulet.so: libcurve_fit.so gpulet.cpp
 libcurve_fit.so: curve_fit.cpp
 	$(CC) $(SHARED_FLAGS) -o $@ curve_fit.cpp
 
-libconfig.so: config.cpp
-	$(CC) $(SHARED_FLAGS) -o $@ config.cpp
-
 clean:
-	rm -f main libsystem.so libgpulet.so libconfig.so
+	rm -f main libsystem.so libgpulet.so

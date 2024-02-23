@@ -1,0 +1,46 @@
+Container nvidia build =  29224839
+fp16 activated!
+02/22/2024 07:56:33 - INFO - __main__ -   device: cuda n_gpu: 1, distributed training: False, 16-bits training: True
+02/22/2024 07:56:39 - INFO - __main__ -   USING CHECKPOINT from /workspace/bert/checkpoints/pytorch_model.bin
+02/22/2024 07:56:39 - INFO - __main__ -   USED CHECKPOINT from /workspace/bert/checkpoints/pytorch_model.bin
+02/22/2024 07:56:44 - INFO - __main__ -   using fp16
+02/22/2024 07:56:45 - INFO - __main__ -   ***** Running evaluation *****
+02/22/2024 07:56:45 - INFO - __main__ -     Num examples = 408
+02/22/2024 07:56:45 - INFO - __main__ -     Batch size = 1
+DLL 2024-02-22 07:56:33.850316 - PARAMETER Config : ["Namespace(amp=False, bert_model='bert-large-uncased', config_file='/workspace/bert/bert_configs/large.json', data_dir='/workspace/bert/data/download/glue/MRPC/', do_eval=False, do_lower_case=True, do_predict=True, do_train=False, eval_batch_size=1, fp16=True, gradient_accumulation_steps=1, init_checkpoint='/workspace/bert/checkpoints/pytorch_model.bin', learning_rate=2.4e-05, local_rank=-1, loss_scale=0, max_seq_length=128, max_steps=1000.0, no_cuda=False, num_train_epochs=3.0, output_dir='/workspace/bert/results/MRPC', seed=1000, server_ip='', server_port='', skip_checkpoint=False, task_name='mrpc', train_batch_size=32, vocab_file='/workspace/bert/data/download/google_pretrained_weights/uncased_L-24_H-1024_A-16/vocab.txt', warmup_proportion=0.1)"] 
+DLL 2024-02-22 07:56:33.850880 - PARAMETER SEED : 1000 
+DLL 2024-02-22 07:56:39.784220 - PARAMETER num_parameters : 335150082 
+Selected optimization level O2:  FP16 training with FP32 batchnorm and FP32 master weights.
+
+Defaults for this optimization level are:
+enabled                : True
+opt_level              : O2
+cast_model_type        : torch.float16
+patch_torch_functions  : False
+keep_batchnorm_fp32    : True
+master_weights         : True
+loss_scale             : dynamic
+Processing user overrides (additional kwargs that are not None)...
+After processing overrides, optimization options are:
+enabled                : True
+opt_level              : O2
+cast_model_type        : torch.float16
+patch_torch_functions  : False
+keep_batchnorm_fp32    : False
+master_weights         : True
+loss_scale             : dynamic
+Evaluating: 0it [00:00, ?it/s]Evaluating: 1it [00:01,  1.97s/it]Evaluating: 10it [00:02,  6.51it/s]Evaluating: 19it [00:02, 13.67it/s]Evaluating: 27it [00:02, 20.93it/s]Evaluating: 35it [00:02, 28.85it/s]Evaluating: 43it [00:02, 36.91it/s]Evaluating: 51it [00:02, 44.76it/s]Evaluating: 60it [00:02, 53.00it/s]Evaluating: 69it [00:02, 59.78it/s]Evaluating: 77it [00:02, 64.49it/s]Evaluating: 85it [00:03, 68.12it/s]Evaluating: 93it [00:03, 70.48it/s]Evaluating: 101it [00:03, 72.54it/s]Evaluating: 109it [00:03, 73.84it/s]Evaluating: 118it [00:03, 76.20it/s]Evaluating: 127it [00:03, 77.49it/s]Evaluating: 135it [00:03, 78.04it/s]Evaluating: 143it [00:03, 78.14it/s]Evaluating: 151it [00:03, 77.96it/s]Evaluating: 159it [00:03, 78.03it/s]Evaluating: 167it [00:04, 78.09it/s]Evaluating: 176it [00:04, 79.28it/s]Evaluating: 185it [00:04, 79.81it/s]Evaluating: 194it [00:04, 79.98it/s]Evaluating: 203it [00:04, 79.22it/s]Evaluating: 211it [00:04, 79.11it/s]Evaluating: 219it [00:04, 78.95it/s]Evaluating: 227it [00:04, 79.17it/s]Evaluating: 236it [00:04, 79.99it/s]Evaluating: 245it [00:05, 79.95it/s]Evaluating: 253it [00:05, 79.61it/s]Evaluating: 261it [00:05, 79.31it/s]Evaluating: 269it [00:05, 79.09it/s]Evaluating: 277it [00:05, 78.85it/s]Evaluating: 286it [00:05, 79.53it/s]Evaluating: 295it [00:05, 79.80it/s]Evaluating: 303it [00:05, 79.59it/s]Evaluating: 311it [00:05, 79.52it/s]Evaluating: 319it [00:05, 79.49it/s]Evaluating: 327it [00:06, 79.27it/s]Evaluating: 335it [00:06, 79.02it/s]Evaluating: 344it [00:06, 79.52it/s]Evaluating: 353it [00:06, 79.92it/s]Evaluating: 361it [00:06, 79.76it/s]Evaluating: 369it [00:06, 79.68it/s]Evaluating: 377it [00:06, 79.57it/s]Evaluating: 385it [00:06, 79.51it/s]Evaluating: 393it [00:06, 79.22it/s]Evaluating: 402it [00:07, 80.04it/s]Evaluating: 408it [00:07, 57.49it/s]
+02/22/2024 07:56:52 - INFO - __main__ -   ***** Results *****
+02/22/2024 07:56:52 - INFO - __main__ -     eval:num_samples_per_gpu = 408
+02/22/2024 07:56:52 - INFO - __main__ -     eval:num_steps = 408
+02/22/2024 07:56:52 - INFO - __main__ -     infer:latency(ms):100% = 1968.8878173828125
+02/22/2024 07:56:52 - INFO - __main__ -     infer:latency(ms):50% = 12.318719863891602
+02/22/2024 07:56:52 - INFO - __main__ -     infer:latency(ms):90% = 12.6627836227417
+02/22/2024 07:56:52 - INFO - __main__ -     infer:latency(ms):95% = 12.728320121765137
+02/22/2024 07:56:52 - INFO - __main__ -     infer:latency(ms):99% = 12.982272148132324
+02/22/2024 07:56:52 - INFO - __main__ -     infer:latency(ms):avg = 17.099018066537145
+02/22/2024 07:56:52 - INFO - __main__ -     infer:latency(ms):std = 96.74700240977035
+02/22/2024 07:56:52 - INFO - __main__ -     infer:latency(ms):sum = 6976.399371147156
+02/22/2024 07:56:52 - INFO - __main__ -     infer:throughput(samples/s):avg = 58.482890427316676
+DLL 2024-02-22 07:56:52.158444 -  e2e_inference_time : 6.9763993711471555 s
+DLL 2024-02-22 07:56:52.158517 -  inference_sequences_per_second : 58.482890427316676 sequences/s

@@ -3,18 +3,25 @@
 #include "system.hpp"
 
 int main() {
+
+    readMemoryCsvFile("/root/research/jh/gpulet/data/mem_util.csv");
+    readThroughputCsvFile("/root/research/jh/gpulet/data/inference.csv");
+    readLatencyCsvFile("/root/research/jh/gpulet/data/inference.csv");
+    readInterfereCsvFile("/root/research/jh/gpulet/data/interference.csv");
+
     // 1. Set the requiring inference data
-    std::vector<std::string> model_names = {"resnet50", "vgg19", "resnet50", "vgg19"};
-    std::vector<int> slos = {100, 100, 100, 100};
-    std::vector<int> rates = {1000, 1000, 1000, 1000};
+    std::vector<std::string> model_names = {"resnet50", "vgg19", "resnet50", "vgg19", "resnet50", "vgg19", "resnet50", "vgg19", "resnet50", "vgg19"};
+    std::vector<double> slos = {100, 100, 100, 100, 100, 100, 100, 100, 100, 100};
+    std::vector<double> rates = {1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000};
 
     // 3. Make System instance
-    int gpu_num = 10;
-    System* system = new System(model_names, slos, rates, gpu_num);
+    System* system = new System(model_names, slos, rates);
 
     system->printPartitioning();
 
     delete system;
     
+    print_interfere_coefficient();
+
     return 0;
 }

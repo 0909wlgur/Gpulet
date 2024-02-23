@@ -1,8 +1,8 @@
 #include "system.hpp"
 
 System::System(const std::vector<std::string>& model_names, 
-            const std::vector<int>& model_slos, const std::vector<int>& model_rates, int gpu_num) 
-            : maxGPU(gpu_num), cnt_gpulet(gpu_num) {
+            const std::vector<double>& model_slos, const std::vector<double>& model_rates) 
+            : gpu_num(0) {
     
     // 0. Initialize the number of GPU and GPUlet
     assert(model_names.size() == model_rates.size() && model_names.size() == model_slos.size());
@@ -15,25 +15,20 @@ System::System(const std::vector<std::string>& model_names,
         
         model->model_id = i;
         model->model_name = model_names[i];
-        model->execution_rate = (double)model_rates[i];
-        model->slo = (double)model_slos[i] / 1000;
+        model->execution_rate = model_rates[i];
+        model->slo = model_slos[i] / 1000;
 
         model_list.push_back(model);
     }
 
     // 2. Make gpu_list of the system.
-    for(int i = 0; i < gpu_num; i++) {
-        Gpu* gpu = new Gpu(i);
-
-        gpu_list.push_back(gpu);
-    }
+    add_gpu();
 
     // 3. Execute the elastic partitioning
     elastricPartitioning();
 
-    checkGPU();
     std::cout << "System generation is complete.\n" << std::endl;
-    std::cout << "The number of needed GPU is " << finalGPU << std::endl << std::endl;
+    std::cout << "The number of needed GPU is " << gpu_num << std::endl << std::endl;
 }
 
 void System::elastricPartitioning() {
@@ -48,16 +43,15 @@ void System::elastricPartitioning() {
     // 2. Get a gpulet for every inference model
     int model_length = model_list.size();
     for (int m = 0; m < model_length; m++) {
-        
         auto model = model_list[m];
         double rate = model->execution_rate;
         double decrease_rate;
 
-        std::cout << "model " << m <<" started\n" << std::endl;
+        std::cout << m << "th model started" << std::endl;
         std::cout << "model name: " << model->model_name << std::endl;
-        std::cout << "slo: " << model->slo << std::endl;
+        std::cout << "slo: " << model->slo << std::endl << std::endl;
 
-        while(rate > 0 && is_remain_gpulet()) {
+        while (rate > 0) {
             int p_eff = get_eff_partition_rate(model->model_name);
             int p_req = get_req_partition_rate(model->model_name, rate);
             int p_ideal = std::min(p_eff, p_req);
@@ -99,6 +93,11 @@ Gpulet System::findBestFit(int model_id, int p_ideal) {
 
     // 0. Make available gpulet list.
     std::vector<std::shared_ptr<Gpulet>> available_gpulet_list = make_available_gpulet_list();
+
+    if (available_gpulet_list.size() == 0) {
+        add_gpu();
+        available_gpulet_list = make_available_gpulet_list();
+    }
     
     // 1. Sort every model by partition size in ascending order.
     std::sort(available_gpulet_list.begin(), available_gpulet_list.end(), 
@@ -112,6 +111,8 @@ Gpulet System::findBestFit(int model_id, int p_ideal) {
 
     for(int i = 0; i < gpulet_cnt; i++) {
         auto gpulet = available_gpulet_list[i];
+        std::cout << "Checking GPU ID: "<< gpulet->getGPUId() << std::endl;
+
         int available_resource = gpulet->getPartition();
         
         if (available_resource >= p_ideal) {
@@ -162,20 +163,38 @@ Gpulet System::findBestFit(int model_id, int p_ideal) {
             return *gpulet;
         }
     }
+    
+    // 존재하는 GPU로 불가능한 상황
+    add_gpu();
+    int new_gpu_idx = getGPUnum() - 1;
+    std::vector<model_info> model_info_vector;
+            
+    model_info model1;
+    model1.model_name = model->model_name;
+    model1.partition = p_ideal;
+    model_info_vector.push_back(model1);
 
-    std::cout << "gpulet_fail" << std::endl;
-    Gpulet gpulet_fail(0);
-    return gpulet_fail;
+    auto gpulet = std::make_shared<Gpulet>(100, new_gpu_idx);
+    gpulet->fixPartition(p_ideal);
+    gpulet->fixGpulet(*model);
+
+    gpulet->setBatch(model_info_vector);
+
+    model1.batch = gpulet->getBatch();
+    gpulet->setRate(model1);
+    gpulet->printGpuletInfo();
+
+    return *gpulet;
 }
 
 std::vector<std::shared_ptr<Gpulet>> System::make_available_gpulet_list() {
     std::vector<std::shared_ptr<Gpulet>> available_gpulet_list;
     
-    for(int g = 0; g < maxGPU; g++) {
+    for(int g = 0; g < gpu_num; g++) {
         // std::cout<< "GPU: " << g << std::endl;
         auto gpu = gpu_list[g];
         int available_resource = gpu->getAvailableResource();
-       
+        
         if (available_resource == 100) {
             // When GPU has (100, none)
             // std::cout<<"When available_resource = 100" << std::endl;
@@ -185,14 +204,15 @@ std::vector<std::shared_ptr<Gpulet>> System::make_available_gpulet_list() {
 
             available_gpulet_list.push_back(new_gpulet);
             // std::cout << "After push back new_gpulet" << std::endl;
-        } else if (gpu->getSecond() != nullptr) {
+
+            std::cout<< "For gpulet list check GPU: " << g << std::endl;
+        } else if (available_resource != 100 && available_resource != 0) {
             // When GPU has (100 - p_ideal, p_ideal)
             // std::cout << "When available_resource != 100" << std::endl;
 
             auto new_gpulet = std::make_shared<Gpulet>(available_resource, g);
             available_gpulet_list.push_back(new_gpulet);
         }
-        // std::cout<< "GPU: " << g << " end" << std::endl;
     }
     // std::cout << "Before return " << std::endl;
     return available_gpulet_list;
@@ -202,21 +222,14 @@ double System::get_remain_rate(int order) {
     return this->model_list[order]->execution_rate;
 }
 
-bool System::is_remain_gpulet() {
-    if (cnt_gpulet == 0)
-        return false;
-    else 
-        return true;
-}
-
 int System::get_req_partition_rate(const std::string& model_name, double rate) {
     model_info model;
     model.model_name = model_name;
-    model.batch = 8;
+    model.batch = 16;
 
-    const std::vector<int> partition = {20, 40, 50, 60, 80};
+    const std::vector<int> partition = {20, 40, 50, 60, 80, 100};
 
-    for(int i = 0; i < 5; i++) {
+    for(int i = 0; i < 6; i++) {
         model.partition = partition[i];
         double throughput = getThroughput(model);
 
@@ -230,7 +243,7 @@ int System::get_req_partition_rate(const std::string& model_name, double rate) {
 int System::get_eff_partition_rate(const std::string& model_name) {
     model_info model;
     model.model_name = model_name;
-    model.batch = 8;
+    model.batch = 16;
 
     const std::vector<int> partition = {0, 20, 40, 50, 60, 80, 100};
 
@@ -254,7 +267,7 @@ int System::get_eff_partition_rate(const std::string& model_name) {
             
 
         double slope = (t2 - t1) / (p2 - p1);
-#ifdef DEBUG
+#ifdef DEBUG_SLOPE
         std::cout << "slope of " << i << ": " << slope << std::endl;
 #endif
         if (slope > max_value_slope) {
@@ -265,13 +278,14 @@ int System::get_eff_partition_rate(const std::string& model_name) {
     return partition[max_value_idx];
 }
 
-void System::checkGPU() {
-    for (int i = 0; i < maxGPU; i++) {
-        auto gpulet = gpu_list[i]->getFirst();
-        if (gpulet->getBatch() == 0)
-            break;
-        finalGPU = i;
-    }
+void System::add_gpu() {
+    auto gpu = new Gpu(gpu_num);
+    gpu_list.push_back(gpu);
+    gpu_num++;
+}
+
+int System::getGPUnum() {
+    return gpu_num;
 }
 
 void System::printModelList() {
@@ -287,7 +301,7 @@ void System::printModelList() {
 }
 
 void System::printPartitioning() {
-    for (int g = 0; g < finalGPU + 1; g++) {
+    for (int g = 0; g < gpu_num; g++) {
         gpu_list[g]->printGPUInfo();
     }
 }

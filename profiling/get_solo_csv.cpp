@@ -8,9 +8,7 @@
 
 std::vector<int> batches = {1, 2, 4, 8, 16, 32, 64};
 std::vector<int> partitions = {20, 40, 50, 60, 80, 100};
-std::vector<std::string> model_names = {"vgg19"};
-std::vector<std::string> infer_model_names = {"vgg19","resnet50"};
-
+std::vector<std::string> model_names = {"vgg16", "vgg19", "resnet50", "resnet101", "resnet152", "densenet121", "densenet169", "densenet201", "inception", "mobilenet"};
 
 std::map<std::string, double> processed_data(const std::string& filepath) {
     std::ifstream file(filepath);
@@ -52,9 +50,9 @@ std::map<std::string, double> processed_data(const std::string& filepath) {
 }
 
 int main() {
-    std::string filepath = "/root/research/jh/gpulet/implement/profiling/";
+    std::string filepath = "/root/research/jh/gpulet/profiling/solo/";
 
-    std::ofstream output_file("vgg19_solo.csv"); // 출력 파일 스트림을 생성
+    std::ofstream output_file("solo.csv"); // 출력 파일 스트림을 생성
 
     if (!output_file.is_open()) {
         std::cerr << "Output file cannot be opened.\n";
@@ -63,16 +61,13 @@ int main() {
 
     for (auto model_name : model_names) {
         // file path
-        filepath = "/root/research/jh/gpulet/implement/profiling/";
-        std::string basic_filepath = filepath + model_name + "_solo/" + model_name + "_";
+        std::string model_filepath = filepath + model_name + "/" + model_name + "_";
 
         for (auto batch : batches) {
             // file name
-            std::string batch_filepath = basic_filepath + std::to_string(batch) + "_";
+            std::string batch_filepath = model_filepath + std::to_string(batch) + "_";
 
             for (auto partition : partitions) {
-                // 여기까지가 측정 데이터에 대한 정보
-
                 // file name
                 std::string final_filename = batch_filepath + std::to_string(partition) + ".txt";
                 
@@ -92,7 +87,7 @@ int main() {
                     }
                 } else {
                     // file patch
-                    std::cerr << filepath << " is wrong." << std::endl;
+                    std::cerr << final_filename << " is wrong." << std::endl;
                     return -1;
                 }
             }

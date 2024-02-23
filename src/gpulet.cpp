@@ -1,6 +1,6 @@
 #include "gpulet.hpp"
 
-#define DEBUG_SETBATCH
+// #define DEBUG_SETBATCH
 
 double is_remain_rate(const model_inference_info& model) {
     return model.execution_rate;
@@ -10,10 +10,6 @@ Gpulet::Gpulet(int available_resource, int gpuId_)
     : resource(available_resource) {
     model = new model_inference_info;
     gpuId = gpuId_;
-}
-
-Gpulet::~Gpulet() {
-    
 }
 
 int Gpulet::getPartition() {
@@ -105,8 +101,8 @@ void Gpulet::setBatch(std::vector<model_info> model_info_vector) {
 
 #ifdef DEBUG_SETBATCH
         std::cout << "try batch: " << batch << std::endl;
-        std::cout << "latency: " << latency << std::endl;
-        std::cout << "interfernce: " << interference << "\n" << std::endl;
+        std::cout << "latency: " << latency * 1000 << std::endl;
+        std::cout << "interfernce: " << interference * 1000 << "\n" << std::endl;
 #endif
 
         // interference 들어가야 함.

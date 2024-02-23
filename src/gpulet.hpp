@@ -35,7 +35,6 @@ private:
 public:
     // make gpulet with available_resource
     Gpulet(int available_resource, int gpuId_ = -1);
-    ~Gpulet();
 
     // Return the gpu id
     int getGPUId();
