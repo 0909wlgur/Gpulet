@@ -8,8 +8,8 @@
 
 std::vector<int> batches = {1, 2, 4, 8, 16, 32, 64};
 std::vector<int> partitions = {20, 40, 50, 60, 80};
-std::vector<std::string> model_names = {"resnet50"};
-std::vector<std::string> infer_model_names = {"vgg19","resnet50"};
+std::vector<std::string> model_names = {"vgg19", "resnet50", "densenet121"};
+std::vector<std::string> infer_model_names = {"vgg19","resnet50", "densenet121", "mobilenet", "inception"};
 
 
 std::map<std::string, double> processed_data(const std::string& filepath) {
@@ -44,6 +44,7 @@ std::map<std::string, double> processed_data(const std::string& filepath) {
         result["latency"] = std::stod(matches[2]);
     } else {
         std::cerr << "The required values could not be found.\n";
+        std::cout << filepath << std::endl;
         result["throughput"] = 0;
         result["latency"] = 0;
     }
@@ -52,9 +53,9 @@ std::map<std::string, double> processed_data(const std::string& filepath) {
 }
 
 int main() {
-    std::string filepath = "/root/research/jh/gpulet/implement/src/";
+    std::string filepath = "/root/research/jh/gpulet/profiling/double/";
 
-    std::ofstream output_file("resnet50_with_interference.csv"); // 출력 파일 스트림을 생성
+    std::ofstream output_file("interference.csv"); // 출력 파일 스트림을 생성
 
     if (!output_file.is_open()) {
         std::cerr << "Output file cannot be opened.\n";
@@ -63,7 +64,6 @@ int main() {
 
     for (auto model_name : model_names) {
         // file path
-        filepath = "/root/research/jh/gpulet/implement/src/";
         std::string basic_filepath = filepath + model_name + "/";
 
         // file name
@@ -89,8 +89,6 @@ int main() {
                     std::string infer_model_filename = partition_filename + infer_model_name +"_";
 
                     for (auto infer_model_batch : batches) {
-                        
-                        
                         // file name
                         std::string final_filename = infer_model_filename + std::to_string(infer_model_batch) + ".txt";
                         std::string filepath = final_filepath + final_filename;
@@ -122,11 +120,10 @@ int main() {
             }
         }
     }
-
     
 
     output_file.close();
 
-    std::cout << "resnet50_with_interference.csv has been created.\n";
+    std::cout << "interference.csv has been created.\n";
     return 0;
 }

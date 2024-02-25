@@ -7,10 +7,8 @@
 #include <nlohmann/json.hpp>
 
 std::vector<int> batches = {1, 2, 4, 8, 16, 32, 64};
-std::vector<int> partitions = {20, 40, 50, 60, 80, 100};
-std::vector<std::string> model_names = {"resnet50"};
-std::vector<std::string> infer_model_names = {"vgg19","resnet50","densenet121","inception","mobilenet"};
-
+std::vector<int> partitions = {20, 40, 50, 60, 80};
+std::vector<std::string> model_names = {"BERT"};
 
 std::map<std::string, double> processed_data(const std::string& filepath) {
     std::ifstream file(filepath);
@@ -50,9 +48,9 @@ std::map<std::string, double> processed_data(const std::string& filepath) {
 }
 
 int main() {
-    std::string filepath = "/root/research/jh/gpulet/implement/src/";
+    std::string basic_filepath = "/root/research/jh/gpulet/profiling/ncu/";
 
-    std::ofstream output_file("resnet50_with_mem_util.csv"); // 출력 파일 스트림을 생성
+    std::ofstream output_file("mem_util_BERT.csv"); // 출력 파일 스트림을 생성
 
     if (!output_file.is_open()) {
         std::cerr << "Output file cannot be opened.\n";
@@ -61,26 +59,26 @@ int main() {
 
     for (auto model_name : model_names) {
         // file path
-        filepath = "/root/research/jh/gpulet/implement/src/";
-        std::string basic_filepath = filepath + model_name + "_ncu/" + model_name + "_";
+        std::string model_filepath = basic_filepath + model_name + "/" + model_name + "_";
 
         for (auto batch : batches) {
             // file name
-            std::string batch_filepath = basic_filepath + std::to_string(batch) + "_";
+            std::string batch_filepath = model_filepath + std::to_string(batch) + "_";
 
             for (auto partition : partitions) {
                 // 여기까지가 측정 데이터에 대한 정보
 
                 // file name
-                std::string final_filename = batch_filepath + std::to_string(partition) + "_final_result.txt";
+                std::string final_filename = batch_filepath + std::to_string(partition) + "_ncu_final_result.txt";
                 
-                std::cout << final_filename << std::endl;
+                // std::cout << final_filename << std::endl;
 
                 auto result = processed_data(final_filename);
 
                 if (result.find("error") == result.end()) {
-                    if (result["throughput"] == 0 && result["latency"] == 0) {
+                    if (result["mem_util"] == 0 && result["l2_util"] == 0) {
                         // Case of Out Of Range 
+                        std::cout << final_filename << " has 0 value" << std::endl;
                         output_file << model_name << "," << batch << "," << partition << ",";
                         output_file << "mem_util," << result["mem_util"] << ",l2_util," << result["l2_util"] << ",0" << std::endl;
                     } else {
@@ -90,9 +88,7 @@ int main() {
                     }
                 } else {
                     // file patch
-                    std::cout << final_filename << std::endl;
-
-                    std::cerr << filepath << " is wrong." << std::endl;
+                    std::cerr << final_filename << " is wrong." << std::endl;
                     return -1;
                 }
             }
@@ -101,6 +97,6 @@ int main() {
 
     output_file.close();
 
-    std::cout << "mem_util.csv has been created.\n";
+    std::cout << "mem_util_BERT.csv has been created.\n";
     return 0;
 }

@@ -91,7 +91,13 @@ void Gpulet::setBatch(std::vector<model_info> model_info_vector) {
             mem_entry inter_model_mem = getMemEntry(inter_model);
 
             double* interference_coeff = new double[5];
-            get_interfere_coefficient(interference_coeff);
+
+            *interference_coeff = 0.000291343;
+            *(interference_coeff + 1) = 0.000364121;
+            *(interference_coeff + 2) = 0.000101413;
+            *(interference_coeff + 3) = 8.24321e-05;
+            *(interference_coeff + 4) = 0.00309856;
+            // get_interfere_coefficient(interference_coeff);
 
             interference = interference_coeff[0] * model_mem.L2_util + interference_coeff[1] * model_mem.Mem_util +
                     interference_coeff[2] * inter_model_mem.L2_util + interference_coeff[3] * inter_model_mem.Mem_util + 

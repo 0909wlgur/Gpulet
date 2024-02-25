@@ -281,7 +281,7 @@ void interfere_coefficient_fitting(std::vector<mem_entry> model1, std::vector<me
     *(coefficients + 2) = std::abs(C(2));
     *(coefficients + 3) = std::abs(C(3));
     *(coefficients + 4) = std::abs(C(4));
-
+    
     gsl_matrix_free (X);
     gsl_vector_free (y);
     gsl_vector_free (c);
@@ -289,16 +289,12 @@ void interfere_coefficient_fitting(std::vector<mem_entry> model1, std::vector<me
 }
 
 void get_interfere_coefficient(double* coefficients) {
-    std::vector<std::string> model_names = {"vgg19", "resnet50"};
+    std::vector<std::string> model_names = {"vgg19", "resnet50", "densenet121"};
     std::vector<int> batches = {1, 2, 4, 8, 16, 32 ,64};
     std::vector<int> partitions = {20, 40, 50, 60, 80};
 
     std::vector<mem_entry> model1, model2;
     std::vector<double> interfere;
-
-    readMemoryCsvFile("/root/research/jh/gpulet/data/mem_util.csv");
-    readLatencyCsvFile("/root/research/jh/gpulet/data/inference.csv");
-    readInterfereCsvFile("/root/research/jh/gpulet/data/interference.csv");
     
     for (auto model_name : model_names) {
         for (auto batch : batches) {
@@ -339,7 +335,7 @@ void get_interfere_coefficient(double* coefficients) {
 
 
 void print_interfere_coefficient() {
-    std::vector<std::string> model_names = {"vgg19", "resnet50"};
+    std::vector<std::string> model_names = {"vgg19", "resnet50", "densenet121"};
     std::vector<int> batches = {1, 2, 4, 8, 16, 32 ,64};
     std::vector<int> partitions = {20, 40, 50, 60, 80};
 

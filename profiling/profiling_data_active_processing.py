@@ -2,6 +2,11 @@ import pandas as pd
 import numpy as np
 import csv
 
+# models = ("vgg16", "vgg19", "resnet50", "resnet101", "resnet152", "densenet121", "densenet169", "densenet201", "inception", "mobilenet")
+models = ("BERT")
+batches = (1, 2, 4, 8, 16, 32, 64)
+partitions = (20, 40, 50, 60, 80)
+
 def average_data(input_file_path):
     # NCU 결과 파일 위치 
     input_file_csv_path = input_file_path + ".csv"
@@ -22,16 +27,19 @@ def average_data(input_file_path):
     csv_start_line = None
     with open(input_file_csv_path, 'r') as file:
         for i, line in enumerate(file):
-            if line.startswith('"'):  # CSV 데이터가 시작되는 첫 번째 라인을 찾는다
+            if '"ID"' in line:  # 줄에 "ID" 문자열이 포함되어 있는지 확인
                 csv_start_line = i
                 break
 
     # CSV 형식 데이터 읽기
     if csv_start_line is not None:
         data = pd.read_csv(input_file_csv_path, header=None, skiprows=csv_start_line, quotechar='"')
+        # data.columns = ["ID","Process ID","Process Name","Host Name","Kernel Name",
+        #                 "Context","Stream","Block Size","Grid Size","Device","CC",
+        #                 "Section Name","Metric Name","Metric Unit","Metric Value"]
         data.columns = ["ID","Process ID","Process Name","Host Name","Kernel Name",
-                        "Context","Stream","Block Size","Grid Size","Device","CC",
-                        "Section Name","Metric Name","Metric Unit","Metric Value"]
+                        "Kernel Time","Context","Stream","Section Name","Metric Name",
+                        "Metric Unit","Metric Value"]
         # 관심있는 열 선택
         first_processing_data = data[["Metric Name", "Kernel Name", "Metric Unit", "Metric Value"]]
     else:
@@ -97,12 +105,12 @@ def average_data(input_file_path):
     output_file.close()
     
 if __name__ == "__main__":
-    model = "vgg19"
-    batches = (1, 2, 4, 8, 16, 32, 64)
-    partitions = (20, 40, 50, 60, 80, 100)
     
-    for batch in batches:
-        for partition in partitions:
-            modelname = f"/root/research/jh/gpulet/implement/src/vgg19_ncu/{model}_{batch}_{partition}"
-            average_data(modelname)
-    
+    for model in models:        
+        for batch in batches:
+            for partition in partitions:
+                model = "BERT"
+                model_path = f"/root/research/jh/gpulet/profiling/ncu/{model}/{model}_{batch}_{partition}_ncu"
+                print(model_path)
+                average_data(model_path)
+
