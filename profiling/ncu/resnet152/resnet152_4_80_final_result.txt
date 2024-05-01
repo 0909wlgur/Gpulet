@@ -1,3 +1,0 @@
-Weighted average of dram__throughput.avg.pct_of_peak_sustained_elapsed: 9.80%
-Weighted average of lts__t_sectors.avg.pct_of_peak_sustained_elapsed: 16.05%
-The overall execution time is 20796.58us

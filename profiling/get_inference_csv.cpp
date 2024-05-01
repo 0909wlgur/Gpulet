@@ -50,9 +50,9 @@ std::map<std::string, double> processed_data(const std::string& filepath) {
 }
 
 int main() {
-    std::string filepath = "/root/research/jh/gpulet/profiling/solo/";
+    std::string filepath = "/root/research/jh/hetero_square/prof_data/gpu_perf/";
 
-    std::ofstream output_file("solo.csv"); // 출력 파일 스트림을 생성
+    std::ofstream output_file("inference.csv"); // 출력 파일 스트림을 생성
 
     if (!output_file.is_open()) {
         std::cerr << "Output file cannot be opened.\n";

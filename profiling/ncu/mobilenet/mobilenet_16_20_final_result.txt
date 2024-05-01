@@ -1,4 +1,0 @@
-Weighted average of Metric Name: 19.08%
-Weighted average of dram__throughput.avg.pct_of_peak_sustained_elapsed: 13.09%
-Weighted average of lts__t_sectors.avg.pct_of_peak_sustained_elapsed: 14.05%
-The overall execution time is 5804.95us

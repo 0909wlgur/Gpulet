@@ -1,0 +1,4 @@
+*.so
+/profiling/double
+/profiling/ncu
+/profiling/solo

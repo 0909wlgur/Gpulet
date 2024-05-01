@@ -1,46 +1,0 @@
-Container nvidia build =  29224839
-fp16 activated!
-02/22/2024 08:03:11 - INFO - __main__ -   device: cuda n_gpu: 1, distributed training: False, 16-bits training: True
-02/22/2024 08:03:17 - INFO - __main__ -   USING CHECKPOINT from /workspace/bert/checkpoints/pytorch_model.bin
-02/22/2024 08:03:17 - INFO - __main__ -   USED CHECKPOINT from /workspace/bert/checkpoints/pytorch_model.bin
-02/22/2024 08:03:23 - INFO - __main__ -   using fp16
-02/22/2024 08:03:23 - INFO - __main__ -   ***** Running evaluation *****
-02/22/2024 08:03:23 - INFO - __main__ -     Num examples = 408
-02/22/2024 08:03:23 - INFO - __main__ -     Batch size = 8
-DLL 2024-02-22 08:03:11.632615 - PARAMETER Config : ["Namespace(amp=False, bert_model='bert-large-uncased', config_file='/workspace/bert/bert_configs/large.json', data_dir='/workspace/bert/data/download/glue/MRPC/', do_eval=False, do_lower_case=True, do_predict=True, do_train=False, eval_batch_size=8, fp16=True, gradient_accumulation_steps=1, init_checkpoint='/workspace/bert/checkpoints/pytorch_model.bin', learning_rate=2.4e-05, local_rank=-1, loss_scale=0, max_seq_length=128, max_steps=1000.0, no_cuda=False, num_train_epochs=3.0, output_dir='/workspace/bert/results/MRPC', seed=1000, server_ip='', server_port='', skip_checkpoint=False, task_name='mrpc', train_batch_size=32, vocab_file='/workspace/bert/data/download/google_pretrained_weights/uncased_L-24_H-1024_A-16/vocab.txt', warmup_proportion=0.1)"] 
-DLL 2024-02-22 08:03:11.633787 - PARAMETER SEED : 1000 
-DLL 2024-02-22 08:03:17.958826 - PARAMETER num_parameters : 335150082 
-Selected optimization level O2:  FP16 training with FP32 batchnorm and FP32 master weights.
-
-Defaults for this optimization level are:
-enabled                : True
-opt_level              : O2
-cast_model_type        : torch.float16
-patch_torch_functions  : False
-keep_batchnorm_fp32    : True
-master_weights         : True
-loss_scale             : dynamic
-Processing user overrides (additional kwargs that are not None)...
-After processing overrides, optimization options are:
-enabled                : True
-opt_level              : O2
-cast_model_type        : torch.float16
-patch_torch_functions  : False
-keep_batchnorm_fp32    : False
-master_weights         : True
-loss_scale             : dynamic
-Evaluating: 0it [00:00, ?it/s]Evaluating: 1it [00:02,  2.27s/it]Evaluating: 5it [00:02,  2.76it/s]Evaluating: 9it [00:02,  5.59it/s]Evaluating: 13it [00:02,  8.89it/s]Evaluating: 17it [00:02, 12.53it/s]Evaluating: 21it [00:02, 16.30it/s]Evaluating: 25it [00:02, 19.97it/s]Evaluating: 29it [00:03, 23.32it/s]Evaluating: 33it [00:03, 26.23it/s]Evaluating: 37it [00:03, 28.62it/s]Evaluating: 41it [00:03, 30.52it/s]Evaluating: 45it [00:03, 31.99it/s]Evaluating: 49it [00:03, 33.09it/s]Evaluating: 51it [00:03, 13.91it/s]
-02/22/2024 08:03:27 - INFO - __main__ -   ***** Results *****
-02/22/2024 08:03:27 - INFO - __main__ -     eval:num_samples_per_gpu = 408
-02/22/2024 08:03:27 - INFO - __main__ -     eval:num_steps = 51
-02/22/2024 08:03:27 - INFO - __main__ -     infer:latency(ms):100% = 2271.10595703125
-02/22/2024 08:03:27 - INFO - __main__ -     infer:latency(ms):50% = 27.438079833984375
-02/22/2024 08:03:27 - INFO - __main__ -     infer:latency(ms):90% = 27.479040145874023
-02/22/2024 08:03:27 - INFO - __main__ -     infer:latency(ms):95% = 27.496448516845703
-02/22/2024 08:03:27 - INFO - __main__ -     infer:latency(ms):99% = 27.52614402770996
-02/22/2024 08:03:27 - INFO - __main__ -     infer:latency(ms):avg = 71.43524203580968
-02/22/2024 08:03:27 - INFO - __main__ -     infer:latency(ms):std = 311.0804171501239
-02/22/2024 08:03:27 - INFO - __main__ -     infer:latency(ms):sum = 3643.197343826294
-02/22/2024 08:03:27 - INFO - __main__ -     infer:throughput(samples/s):avg = 111.98954146455736
-DLL 2024-02-22 08:03:27.017859 -  e2e_inference_time : 3.643197343826294 s
-DLL 2024-02-22 08:03:27.017930 -  inference_sequences_per_second : 111.98954146455736 sequences/s
